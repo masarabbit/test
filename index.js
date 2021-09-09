@@ -1,21 +1,12 @@
 import express from 'express'
-import mongoose from 'mongoose'
 
-const port = 4000
-const dbURI = 'mongodb://localhost/wrld'
+import logger from './lib/logger.js'
+import { port } from './config/environment.js'
+import connectToDatabase from './lib/connectToDb.js'
+
+import wrldMap from './models/map.js' 
 
 const app = express()
-
-
-
-function connectToDatabase() {
-  mongoose.connect(dbURI, { useNewUrlParser: true,  useUnifiedTopology: true })
-}
-
-function logger(req, _res, next){
-  console.log(`incoming requests: ${req.method} - ${req.url}`)
-  next()
-}
 
 
 
@@ -23,7 +14,7 @@ async function startServer() {
   try {
     await connectToDatabase()
     console.log(' Database has connected')
-    
+    // app.use(express.json())
     app.use(logger)
 
     // app.get('/api/doodles', async (_req, res) => {
@@ -46,11 +37,11 @@ app.use(express.json())
 
 
 
-const mapSchema = new mongoose.Schema({
-  map: { type: String, required: true },
-  characters: { type: Array, required: true }
-})
-const wrldMap = mongoose.model('wrldMap', mapSchema)
+// const mapSchema = new mongoose.Schema({
+//   map: { type: String, required: true },
+//   characters: { type: Array, required: true }
+// })
+// const wrldMap = mongoose.model('wrldMap', mapSchema)
 
 
 app.get('/api/maps', async (_req, res) => {
